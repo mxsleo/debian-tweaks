@@ -13,7 +13,7 @@ _VBOX_VER="7.0"
 
 function debian_setup_virtualbox_key()
 {
-    wget --verbose --no-clobber --output-document=- https://www.virtualbox.org/download/oracle_vbox_2016.asc | sudo gpg --dearmor --output /etc/apt/keyrings/oracle-virtualbox-2016.gpg
+    wget --verbose --no-clobber --output-document=- https://www.virtualbox.org/download/oracle_vbox_2016.asc | gpg --dearmor --output /etc/apt/keyrings/oracle-virtualbox-2016.gpg
 }
 
 function debian_setup_virtualbox_repository()
@@ -26,20 +26,27 @@ function debian_setup_virtualbox_repository()
 		EOF
     )"
 
-    echo "${_sources_list_virtualbox}" | sudo tee /etc/apt/sources.list.d/oracle-virtualbox.list > /dev/null
+    echo "${_sources_list_virtualbox}" | tee /etc/apt/sources.list.d/oracle-virtualbox.list > /dev/null
 
-    sudo apt update
+    apt update
 }
 
 function debian_setup_virtualbox_repository()
 {
-    sudo apt install --yes "virtualbox-${_VBOX_VER}"
+    apt install --yes "virtualbox-${_VBOX_VER}"
 }
 
 # Functions ---
 
 
 # Main +++
+
+if [[ "$(id -u)" -ne 0 ]]
+then
+    echo "The script must be run as root"
+    read -rsp "Press Enter to continue..."
+    exit 1
+fi
 
 debian_setup_virtualbox_key
 debian_setup_virtualbox_repository

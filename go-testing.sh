@@ -19,18 +19,25 @@ function debian_go_testing()
 		EOF
     )"
 
-    echo "${_sources_list}" | sudo tee /etc/apt/sources.list > /dev/null
+    echo "${_sources_list}" | tee /etc/apt/sources.list > /dev/null
 
-    sudo apt update
-    sudo apt full-upgrade --yes
-    sudo apt autoremove --yes
-    sudo apt autoclean
+    apt update
+    apt full-upgrade --yes
+    apt autoremove --yes
+    apt autoclean
 }
 
 # Functions ---
 
 
 # Main +++
+
+if [[ "$(id -u)" -ne 0 ]]
+then
+    echo "The script must be run as root"
+    read -rsp "Press Enter to continue..."
+    exit 1
+fi
 
 debian_go_testing
 
